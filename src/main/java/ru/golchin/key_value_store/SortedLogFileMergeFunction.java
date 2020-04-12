@@ -1,4 +1,6 @@
-package ru.golchin;
+package ru.golchin.key_value_store;
+
+import ru.golchin.util.PeekableIterator;
 
 import java.io.IOException;
 import java.util.List;

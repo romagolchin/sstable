@@ -1,9 +1,11 @@
-package ru.golchin;
+package ru.golchin.key_value_store;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import ru.golchin.util.ThrowingFunction;
+import ru.golchin.util.Util;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class AbstractBitcaskTest<T extends LogFile> extends AbstractTest {
+    @SuppressWarnings("unused")
     @TempDir
     public Path storePath;
     protected Bitcask<T> bitcask;

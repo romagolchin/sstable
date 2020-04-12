@@ -1,6 +1,7 @@
-package ru.golchin;
+package ru.golchin.key_value_store;
 
 import org.jetbrains.annotations.NotNull;
+import ru.golchin.util.ThrowingFunction;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -17,7 +18,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import static java.nio.file.Files.*;
 import static java.util.stream.Collectors.toList;
-import static ru.golchin.Util.deleteDirectory;
+import static ru.golchin.util.Util.deleteDirectory;
 
 public class Bitcask<T extends LogFile> implements KeyValueStore<String, String> {
     public static final int MAX_FILES_TO_COMPACT = 4;

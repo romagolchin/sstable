@@ -1,4 +1,4 @@
-package ru.golchin;
+package ru.golchin.util;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;

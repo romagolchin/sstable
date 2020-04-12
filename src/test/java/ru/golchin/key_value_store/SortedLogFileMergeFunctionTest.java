@@ -1,4 +1,4 @@
-package ru.golchin;
+package ru.golchin.key_value_store;
 
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class SortedLogFileMergeFunctionTest {
+    @SuppressWarnings("unused")
     @TempDir
     Path path;
 

@@ -1,9 +1,9 @@
-package ru.golchin;
+package ru.golchin.key_value_store;
 
 import java.util.*;
 
 public abstract class AbstractTest {
-    private Random random = new Random(42L);
+    private final Random random = new Random(42L);
 
     public List<Map<String, String>> generateKeysAndValues(int size, int nKeys, int length) {
         var result = new ArrayList<Map<String, String>>();

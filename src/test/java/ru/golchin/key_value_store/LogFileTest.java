@@ -1,9 +1,10 @@
-package ru.golchin;
+package ru.golchin.key_value_store;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import ru.golchin.util.PeekableIterator;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -13,6 +14,7 @@ import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SuppressWarnings("unused")
 class LogFileTest extends AbstractTest {
     @TempDir
     static Path tempDirectory;

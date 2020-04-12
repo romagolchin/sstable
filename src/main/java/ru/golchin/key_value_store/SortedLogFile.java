@@ -1,4 +1,4 @@
-package ru.golchin;
+package ru.golchin.key_value_store;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -7,7 +7,7 @@ import java.util.*;
 public class SortedLogFile extends LogFile {
     public static final int DEFAULT_SPARSE_FACTOR = 1000;
     private NavigableMap<String, Integer> keyToOffset;
-    private SortedMap<String, String> memTable = new TreeMap<>();
+    private final SortedMap<String, String> memTable = new TreeMap<>();
     private final int sparseFactor;
     private long sizeBytes = 0;
 

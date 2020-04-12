@@ -1,4 +1,4 @@
-package ru.golchin;
+package ru.golchin.key_value_store;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -7,15 +7,9 @@ import java.util.*;
 public class HashIndexLogFile extends LogFile {
     static final int MAX_SIZE = 8 * 1024;
     private Map<String, Integer> keyToOffset;
-    private final long maxSizeBytes;
 
     public HashIndexLogFile(Path path) throws IOException {
-        this(path, MAX_SIZE);
-    }
-
-    public HashIndexLogFile(Path path, long maxSizeBytes) throws IOException {
         super(path);
-        this.maxSizeBytes = maxSizeBytes;
         if (keyToOffset == null) {
             keyToOffset = new HashMap<>();
         }

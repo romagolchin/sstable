@@ -1,10 +1,10 @@
-package ru.golchin;
+package ru.golchin.key_value_store;
 
 import java.util.Objects;
 
 class KeyValueRecord {
-    private String key;
-    private String value;
+    private final String key;
+    private final String value;
 
     public KeyValueRecord(String key, String value) {
         this.key = key;

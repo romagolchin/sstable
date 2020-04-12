@@ -1,4 +1,6 @@
-package ru.golchin;
+package ru.golchin.key_value_store;
+
+import ru.golchin.util.PeekableIterator;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -142,7 +144,7 @@ public abstract class LogFile {
     }
 
     class LogFileIterator implements PeekableIterator<KeyValueRecord> {
-        private List<KeyValueRecord> record = new ArrayList<>();
+        private final List<KeyValueRecord> record = new ArrayList<>();
 
         private KeyValueRecord throwIfNull(KeyValueRecord record) {
             if (record == null)
