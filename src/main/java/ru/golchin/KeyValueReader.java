@@ -2,7 +2,6 @@ package ru.golchin;
 
 import java.io.*;
 import java.nio.file.Path;
-import java.util.Map;
 
 public class KeyValueReader implements Closeable {
     private final ThreadLocal<RandomAccessFile> inputFile;
@@ -40,7 +39,16 @@ public class KeyValueReader implements Closeable {
 
     KeyValueRecord read(long offset) throws IOException {
         getInputFile().seek(offset);
-        return new KeyValueRecord(readString(), readString());
+        return read(true);
+    }
+
+    KeyValueRecord read(boolean movePointer) throws IOException {
+        long start = getInputFile().getFilePointer();
+        String key = readString();
+        String value = readString();
+        if (!movePointer)
+            getInputFile().seek(start);
+        return new KeyValueRecord(key, value);
     }
 
     String readValue(long offset) throws IOException {
@@ -50,26 +58,21 @@ public class KeyValueReader implements Closeable {
         return readString();
     }
 
+    public boolean canRead() throws IOException {
+        return getInputFile().getFilePointer() < getInputFile().length();
+    }
+
+    public long getOffset() throws IOException {
+        return getInputFile().getFilePointer();
+    }
+
+    public void setOffset(long offset) throws IOException {
+        getInputFile().seek(offset);
+    }
+
     @Override
     public void close() throws IOException {
         getInputFile().close();
     }
 
-    static class KeyValueRecord {
-        private String key;
-        private String value;
-
-        public KeyValueRecord(String key, String value) {
-            this.key = key;
-            this.value = value;
-        }
-
-        public String getKey() {
-            return key;
-        }
-
-        public String getValue() {
-            return value;
-        }
-    }
 }

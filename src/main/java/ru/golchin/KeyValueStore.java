@@ -1,12 +1,14 @@
 package ru.golchin;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.Closeable;
 import java.io.IOException;
 
 public interface KeyValueStore<K, V> extends Closeable {
-    void put(K k, V v) throws IOException;
+    void put(@NotNull K k, @NotNull V v) throws IOException;
 
-    V get(K k) throws IOException;
+    V get(@NotNull K k) throws IOException;
 
-    void remove(K k) throws IOException;
+    void remove(@NotNull K k) throws IOException;
 }

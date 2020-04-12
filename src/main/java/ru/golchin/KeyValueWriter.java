@@ -10,12 +10,9 @@ import java.nio.file.StandardOpenOption;
 
 public class KeyValueWriter implements Closeable {
     private final DataOutputStream outputStream;
-    private volatile long size;
 
     public KeyValueWriter(Path path) throws IOException {
         outputStream = new DataOutputStream(Files.newOutputStream(path, StandardOpenOption.CREATE, StandardOpenOption.APPEND));
-        size = outputStream.size();
-//        System.out.println(size);
     }
 
     void writeString(String s) throws IOException {
@@ -35,16 +32,19 @@ public class KeyValueWriter implements Closeable {
         int offset = outputStream.size();
         writeString(key);
         writeString(value);
-        size = outputStream.size();
         return offset;
-    }
-
-    public long getSize() {
-        return size;
     }
 
     @Override
     public void close() throws IOException {
         outputStream.close();
+    }
+
+    private long getSize(String s) {
+        return s == null ? 4 : s.length() * 2 + 4;
+    }
+
+    public long getRecordSize(String key, String value) {
+        return getSize(key) + getSize(value);
     }
 }
