@@ -1,0 +1,1 @@
+An prototype implementation of SSTable as described in "Designing Data Intensive Applications", Martin Kleppmann. 
