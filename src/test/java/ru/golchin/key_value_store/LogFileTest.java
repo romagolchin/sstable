@@ -15,7 +15,7 @@ import java.util.NoSuchElementException;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("unused")
-class LogFileTest extends AbstractTest {
+class LogFileTest extends CommonTest {
     @TempDir
     static Path tempDirectory;
 

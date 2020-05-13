@@ -5,9 +5,7 @@ import ru.golchin.util.ThrowingFunction;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -15,13 +13,15 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.logging.Logger;
 
 import static java.nio.file.Files.*;
 import static java.util.stream.Collectors.toList;
 import static ru.golchin.util.Util.deleteDirectory;
 
-public class Bitcask<T extends LogFile> implements KeyValueStore<String, String> {
+public class KeyValueStoreImpl<T extends LogFile> implements KeyValueStore<String, String> {
     public static final int MAX_FILES_TO_COMPACT = 4;
+    private static final Logger LOG = Logger.getLogger(KeyValueStoreImpl.class.getName());
     private final Path directory;
     private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
     private final ConcurrentNavigableMap<Integer, T> logFiles = new ConcurrentSkipListMap<>();
@@ -34,17 +34,17 @@ public class Bitcask<T extends LogFile> implements KeyValueStore<String, String>
     private final ThrowingFunction<Path, ? extends T, IOException> logFileConstructor;
     private final MergeFunction<T> mergeFunction;
 
-    public Bitcask(Path directory,
-                   long maxSizeBytes,
-                   ThrowingFunction<Path, ? extends T, IOException> logFileConstructor,
-                   MergeFunction<T> mergeFunction) throws IOException {
+    public KeyValueStoreImpl(Path directory,
+                             long maxSizeBytes,
+                             ThrowingFunction<Path, ? extends T, IOException> logFileConstructor,
+                             MergeFunction<T> mergeFunction) throws IOException {
         this(directory, maxSizeBytes, logFileConstructor, mergeFunction, true);
     }
 
-    public Bitcask(Path directory,
-                   long maxSizeBytes,
-                   ThrowingFunction<Path, ? extends T, IOException> logFileConstructor,
-                   MergeFunction<T> mergeFunction, boolean shouldCompact) throws IOException {
+    public KeyValueStoreImpl(Path directory,
+                             long maxSizeBytes,
+                             ThrowingFunction<Path, ? extends T, IOException> logFileConstructor,
+                             MergeFunction<T> mergeFunction, boolean shouldCompact) throws IOException {
         this.directory = directory;
         this.maxSizeBytes = maxSizeBytes;
         this.logFileConstructor = logFileConstructor;
@@ -155,7 +155,6 @@ public class Bitcask<T extends LogFile> implements KeyValueStore<String, String>
                 Thread.currentThread().interrupt();
             }
         }
-        assertIndices();
         assert exists(currentFile.getIndexPath()) : currentFile.getPath();
     }
 
@@ -173,7 +172,7 @@ public class Bitcask<T extends LogFile> implements KeyValueStore<String, String>
             int lastVersion = filesToCompact.get(filesToCompact.size() - 1).getVersion();
             T newFile = createNewFile(lastVersion + 1);
             List<Integer> versions = filesToCompact.stream().map(LogFile::getVersion).collect(toList());
-            System.out.println("compacting versions " + versions + " to version " + newFile.getVersion());
+            LOG.info("compacting versions " + versions + " to version " + newFile.getVersion());
             mergeFunction.merge(filesToCompact, newFile);
             logFiles.put(newFile.getVersion(), newFile);
             long sumSize = 0;
@@ -182,27 +181,13 @@ public class Bitcask<T extends LogFile> implements KeyValueStore<String, String>
                 logFiles.remove(logFile.getVersion());
                 deleteDirectory(logFile.getPath());
             }
-            System.out.println("before compaction " + sumSize);
-            System.out.println("after compaction " + newFile.getSize());
-            assertIndices();
+            LOG.info("before compaction " + sumSize);
+            LOG.info("after compaction " + newFile.getSize());
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         } finally {
             readWriteLock.writeLock().unlock();
         }
-    }
-
-    private void assertIndices() throws IOException {
-        List<Path> badPaths = new ArrayList<>();
-        Files.list(directory).forEach(path -> {
-            try {
-                if (isDirectory(path) && list(path).noneMatch(p -> "index".equals(p.getFileName().toString())))
-                    badPaths.add(path);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-        assert badPaths.size() < 2 : badPaths;
     }
 
 }

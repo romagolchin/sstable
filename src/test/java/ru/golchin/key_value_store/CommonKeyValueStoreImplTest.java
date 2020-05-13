@@ -16,21 +16,20 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public abstract class AbstractBitcaskTest<T extends LogFile> extends AbstractTest {
+public abstract class CommonKeyValueStoreImplTest<T extends LogFile> extends CommonTest {
     @SuppressWarnings("unused")
     @TempDir
     public Path storePath;
-    protected Bitcask<T> bitcask;
+    protected KeyValueStoreImpl<T> store;
     protected ThrowingFunction<Path, T, IOException> logFileConstructor;
     protected MergeFunction<T> mergeFunction;
 
     @BeforeEach
     void setUp() throws Exception {
-        bitcask = new Bitcask<>(storePath, HashIndexLogFile.MAX_SIZE, logFileConstructor, mergeFunction);
+        store = new KeyValueStoreImpl<>(storePath, HashIndexLogFile.MAX_SIZE, logFileConstructor, mergeFunction);
     }
 
     @Test
@@ -42,14 +41,14 @@ public abstract class AbstractBitcaskTest<T extends LogFile> extends AbstractTes
                 String k = entry.getKey();
                 String v = entry.getValue();
                 resultingMap.put(k, v);
-                bitcask.put(k, v);
-                assertEquals(v, bitcask.get(k));
+                store.put(k, v);
+                assertEquals(v, store.get(k));
             }
         }
         for (Map.Entry<String, String> entry : resultingMap.entrySet()) {
-            assertEquals(entry.getValue(), bitcask.get(entry.getKey()));
+            assertEquals(entry.getValue(), store.get(entry.getKey()));
         }
-        bitcask.close();
+        store.close();
     }
 
     @Test
@@ -57,8 +56,8 @@ public abstract class AbstractBitcaskTest<T extends LogFile> extends AbstractTes
         ExecutorService pool = Executors.newFixedThreadPool(10);
         pool.submit(() -> {
             try {
-                bitcask.put("a", "1");
-                bitcask.put("b", "2");
+                store.put("a", "1");
+                store.put("b", "2");
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -66,8 +65,8 @@ public abstract class AbstractBitcaskTest<T extends LogFile> extends AbstractTes
         for (int i = 0; i < 10; i++) {
             pool.submit(() -> {
                 try {
-                    String b = bitcask.get("b");
-                    String a = bitcask.get("a");
+                    String b = store.get("b");
+                    String a = store.get("a");
                     assertTrue(b == null && a == null || "2".equals(b) && "1".equals(a));
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -80,10 +79,10 @@ public abstract class AbstractBitcaskTest<T extends LogFile> extends AbstractTes
 
     @Test
     void remove() throws Exception {
-        assertNull(bitcask.get("cd"));
-        bitcask.put("ab", "cde");
-        bitcask.remove("ab");
-        assertNull(bitcask.get("ab"));
+        assertNull(store.get("cd"));
+        store.put("ab", "cde");
+        store.remove("ab");
+        assertNull(store.get("ab"));
     }
 
     @Test
@@ -93,13 +92,13 @@ public abstract class AbstractBitcaskTest<T extends LogFile> extends AbstractTes
             for (int j = 0; j < 10; j++) {
                 String key = String.valueOf(i);
                 String value = String.valueOf(i + j).repeat(1000);
-                bitcask.put(key, value);
+                store.put(key, value);
                 map.put(key, value);
-                bitcask.compact();
+                store.compact();
             }
         }
-        bitcask.close();
-        Bitcask<T> other = new Bitcask<>(storePath, HashIndexLogFile.MAX_SIZE, logFileConstructor, mergeFunction);
+        store.close();
+        KeyValueStoreImpl<T> other = new KeyValueStoreImpl<>(storePath, HashIndexLogFile.MAX_SIZE, logFileConstructor, mergeFunction);
         for (var entry : map.entrySet()) {
             other.compact();
             assertEquals(entry.getValue(), other.get(entry.getKey()));
@@ -116,7 +115,6 @@ public abstract class AbstractBitcaskTest<T extends LogFile> extends AbstractTes
                 throw new UncheckedIOException(e);
             }
         });
-        System.out.println(Files.list(storePath).collect(Collectors.toList()));
         Files.delete(storePath);
     }
 }

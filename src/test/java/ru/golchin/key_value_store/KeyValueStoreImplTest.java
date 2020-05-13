@@ -1,7 +1,7 @@
 package ru.golchin.key_value_store;
 
-class BitcaskTest extends AbstractBitcaskTest<HashIndexLogFile> {
-    public BitcaskTest() {
+class KeyValueStoreImplTest extends CommonKeyValueStoreImplTest<HashIndexLogFile> {
+    public KeyValueStoreImplTest() {
         logFileConstructor = HashIndexLogFile::new;
         mergeFunction = HashIndexLogFileMergeFunction.INSTANCE;
     }
