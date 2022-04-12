@@ -1,5 +1,6 @@
 package ru.golchin.key_value_store;
 
+import ru.golchin.key_value_store.io.KeyValueRecord;
 import ru.golchin.util.PeekableIterator;
 
 import java.io.IOException;
@@ -7,8 +8,8 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
-public class SortedLogFileMergeFunction implements MergeFunction<SortedLogFile> {
-    public static final SortedLogFileMergeFunction INSTANCE = new SortedLogFileMergeFunction();
+public class SSTableMergeFunction implements MergeFunction<SSTableLogFile> {
+    public static final SSTableMergeFunction INSTANCE = new SSTableMergeFunction();
 
     KeyValueRecord ceilingRecord(PeekableIterator<KeyValueRecord> logFileIterator, String key) {
         KeyValueRecord record = logFileIterator.peek();
@@ -29,7 +30,7 @@ public class SortedLogFileMergeFunction implements MergeFunction<SortedLogFile> 
     }
 
     @Override
-    public void merge(List<SortedLogFile> files, SortedLogFile newFile) throws IOException {
+    public void merge(List<SSTableLogFile> files, SSTableLogFile newFile) throws IOException {
         String lastWrittenKey = null;
         List<PeekableIterator<KeyValueRecord>> records = files.stream()
                 .map(LogFile::iterator).collect(toList());

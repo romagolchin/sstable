@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import ru.golchin.key_value_store.io.KeyValueRecord;
 import ru.golchin.util.PeekableIterator;
 
 import java.io.IOException;
@@ -21,7 +22,7 @@ class LogFileTest extends CommonTest {
 
     static List<LogFile> params() throws IOException {
         return List.of(new HashIndexLogFile(tempDirectory.resolve("hash")),
-                new SortedLogFile(tempDirectory.resolve("sorted")));
+                new SSTableLogFile(tempDirectory.resolve("sorted")));
     }
 
     @ParameterizedTest
@@ -41,7 +42,7 @@ class LogFileTest extends CommonTest {
 
     @Test
     void iterator() throws IOException {
-        SortedLogFile file = new SortedLogFile(tempDirectory.resolve("file"));
+        SSTableLogFile file = new SSTableLogFile(tempDirectory.resolve("file"));
         file.put("1", "1");
         file.put("2", "2");
         file.put("3", "3");

@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-class SortedLogFileMergeFunctionTest {
+class SSTableLogFileMergeFunctionTest {
     @SuppressWarnings("unused")
     @TempDir
     Path path;
@@ -39,10 +39,10 @@ class SortedLogFileMergeFunctionTest {
     @ParameterizedTest
     @MethodSource("params")
     void merge(List<Map<String, String>> sourceMaps, Map<String, String> mergedRecords) throws IOException {
-        var files = new ArrayList<SortedLogFile>();
+        var files = new ArrayList<SSTableLogFile>();
         for (int i = 0; i < sourceMaps.size(); i++) {
             Path logPath = path.resolve(String.valueOf(i));
-            SortedLogFile logFile = new SortedLogFile(logPath);
+            SSTableLogFile logFile = new SSTableLogFile(logPath);
             files.add(logFile);
             Map<String, String> sourceMap = sourceMaps.get(i);
             for (var entry : sourceMap.entrySet()) {
@@ -50,8 +50,8 @@ class SortedLogFileMergeFunctionTest {
             }
             logFile.closeOnWrite();
         }
-        SortedLogFile newFile = new SortedLogFile(path.resolve(String.valueOf(sourceMaps.size())));
-        SortedLogFileMergeFunction.INSTANCE.merge(files, newFile);
+        SSTableLogFile newFile = new SSTableLogFile(path.resolve(String.valueOf(sourceMaps.size())));
+        SSTableMergeFunction.INSTANCE.merge(files, newFile);
         assertEquals(mergedRecords, newFile.asMap());
     }
 }

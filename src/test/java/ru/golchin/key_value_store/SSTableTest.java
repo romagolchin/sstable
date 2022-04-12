@@ -1,9 +1,9 @@
 package ru.golchin.key_value_store;
 
-public class SSTableTest extends CommonKeyValueStoreImplTest<SortedLogFile> {
+public class SSTableTest extends CommonKeyValueStoreImplTest<SSTableLogFile> {
     public SSTableTest() {
-        logFileConstructor = SortedLogFile::new;
-        mergeFunction = SortedLogFileMergeFunction.INSTANCE;
+        logFileConstructor = SSTableLogFile::new;
+        mergeFunction = SSTableMergeFunction.INSTANCE;
     }
 
 }

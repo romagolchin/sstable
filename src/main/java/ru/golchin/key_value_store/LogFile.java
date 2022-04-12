@@ -1,5 +1,8 @@
 package ru.golchin.key_value_store;
 
+import ru.golchin.key_value_store.io.KeyValueReader;
+import ru.golchin.key_value_store.io.KeyValueRecord;
+import ru.golchin.key_value_store.io.KeyValueWriter;
 import ru.golchin.util.PeekableIterator;
 
 import java.io.IOException;
@@ -139,7 +142,7 @@ public abstract class LogFile {
                 .collect(toMap(KeyValueRecord::getKey, KeyValueRecord::getValue));
     }
 
-    PeekableIterator<KeyValueRecord> iterator() {
+    public PeekableIterator<KeyValueRecord> iterator() {
         return new LogFileIterator();
     }
 

@@ -1,4 +1,4 @@
-package ru.golchin.key_value_store;
+package ru.golchin.key_value_store.io;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
@@ -28,7 +28,7 @@ public class KeyValueWriter implements Closeable {
         }
     }
 
-    int write(String key, String value) throws IOException {
+    public int write(String key, String value) throws IOException {
         int offset = outputStream.size();
         writeString(key);
         writeString(value);

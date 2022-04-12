@@ -1,4 +1,4 @@
-package ru.golchin.key_value_store;
+package ru.golchin.key_value_store.io;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -37,12 +37,12 @@ public class KeyValueReader implements Closeable {
         return new String(chars);
     }
 
-    KeyValueRecord read(long offset) throws IOException {
+    public KeyValueRecord read(long offset) throws IOException {
         getInputFile().seek(offset);
         return read(true);
     }
 
-    KeyValueRecord read(boolean movePointer) throws IOException {
+    public KeyValueRecord read(boolean movePointer) throws IOException {
         long start = getInputFile().getFilePointer();
         String key = readString();
         String value = readString();

@@ -1,21 +1,23 @@
 package ru.golchin.key_value_store;
 
+import ru.golchin.key_value_store.io.KeyValueRecord;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
 
-public class SortedLogFile extends LogFile {
+public class SSTableLogFile extends LogFile {
     public static final int DEFAULT_SPARSE_FACTOR = 1000;
     private NavigableMap<String, Integer> keyToOffset;
     private final SortedMap<String, String> memTable = new TreeMap<>();
     private final int sparseFactor;
     private long sizeBytes = 0;
 
-    public SortedLogFile(Path path) throws IOException {
+    public SSTableLogFile(Path path) throws IOException {
         this(path, DEFAULT_SPARSE_FACTOR);
     }
 
-    public SortedLogFile(Path path, int sparseFactor) throws IOException {
+    public SSTableLogFile(Path path, int sparseFactor) throws IOException {
         super(path);
         this.sparseFactor = sparseFactor;
         if (keyToOffset == null) {

@@ -1,8 +1,8 @@
-package ru.golchin.key_value_store;
+package ru.golchin.key_value_store.io;
 
 import java.util.Objects;
 
-class KeyValueRecord {
+public class KeyValueRecord {
     private final String key;
     private final String value;
 

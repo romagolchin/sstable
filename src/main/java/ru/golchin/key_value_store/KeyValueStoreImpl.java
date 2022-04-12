@@ -1,6 +1,7 @@
 package ru.golchin.key_value_store;
 
 import org.jetbrains.annotations.NotNull;
+import ru.golchin.key_value_store.io.KeyValueRecord;
 import ru.golchin.util.ThrowingFunction;
 
 import java.io.IOException;
