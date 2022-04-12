@@ -80,7 +80,7 @@ public abstract class CommonKeyValueStoreImplTest<T extends LogFile> extends Com
     @Test
     void remove() throws Exception {
         assertNull(store.get("cd"));
-        store.put("ab", "cde");
+        store.put("ab", "xyz");
         store.remove("ab");
         assertNull(store.get("ab"));
     }
