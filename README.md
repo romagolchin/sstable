@@ -1,4 +1,5 @@
 ![example workflow](https://github.com/romagolchin/sstable/actions/workflows/maven.yml/badge.svg)
+[![codecov](https://codecov.io/gh/romagolchin/sstable/branch/master/graph/badge.svg)](https://codecov.io/gh/romagolchin/sstable)
 
 A prototype implementation of a key-value store as described in "Designing Data Intensive Applications", Martin
 Kleppmann.
